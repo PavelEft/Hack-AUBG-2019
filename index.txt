@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+    <title>Peaker</title>
+    </head>
+    <body>
+        <div style="background-color: #ae4490; width: 100px; height: 50px">&nbsp;</div>
+        <div style="background-color: #88de30; width: 100px; height: 50px; color: red; font-size: 22px;"><strong>Hello World</strong></div>
+        <img src="https://scontent-sof1-1.xx.fbcdn.net/v/t1.15752-9/52161604_152952605599269_8848237223716323328_n.jpg?_nc_cat=108&_nc_ht=scontent-sof1-1.xx&oh=09c1b3372eb6218727a5e1e60f620e1d&oe=5CE36B8E">
+        <canvas id="viewport"width="800" height="600"></canvas>
+    </body>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        for(el of $("*")){
+            console.log((hexc(el.css("background-color"))));
+        }
+        for(img of $("img")){
+            //For each image create a canvas
+            //Replace the image with the canvas with properties:
+                //canvas.width = img.width();
+                //canvas.height = img.height();
+
+                //base_image = new Image();
+                //base_image.crossOrigin = "Anonymous";
+                //base_image.src = img.attr("src");
+                //base_image.onload = function(){ context.drawImage(base_image, 0, 0);}
+
+            //Continue with the algorithm.
+        }
+
+        var canvas = document.getElementById('viewport'),
+        context = canvas.getContext('2d');
+        make_base();
+        function make_base() {
+            base_image = new Image();
+            base_image.crossOrigin = "Anonymous";
+            /* base_image.src = 'https://scontent-sof1-1.xx.fbcdn.net/v/t1.0-9/17883538_1320180958018582_4497752431086083062_n.jpg?_nc_cat=109&_nc_ht=scontent-sof1-1.xx&oh=9d8334629bada61e37d1d462c15b0a77&oe=5CE214B6';*/
+            base_image.src = 'https://scontent-sof1-1.xx.fbcdn.net/v/t1.15752-9/52161604_152952605599269_8848237223716323328_n.jpg?_nc_cat=108&_nc_ht=scontent-sof1-1.xx&oh=09c1b3372eb6218727a5e1e60f620e1d&oe=5CE36B8E';
+            base_image.onload = function(){
+                context.drawImage(base_image, 0, 0);
+            }
+        }
+
+        var width = canvas.width;
+        var height = canvas.height;
+
+        function adjustOverFlow(value){
+            if(value >= 255) return 255;
+            else return value;
+        }
+        function adjustUnderFlow(value){
+            if(value <= 0) return 0;
+            else return value;
+        }
+
+        setTimeout(function () {
+            var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            var pixelArray = imageData.data;
+
+            var length = pixelArray.length / 4; // 4 component - red, green, blue and alpha
+            for (var i = 0; i < length; i++) {
+                var index = 4 * i;
+                var r = pixelArray[index];
+                var g = pixelArray[++index];
+                var b = pixelArray[++index];
+                var a = pixelArray[++index];
+                var redFlag = false;
+
+               if (r >= 130 && g < r*0.7 && b < r*0.6) {
+                    pixelArray[--index] = adjustOverFlow(pixelArray[--index]*2);
+                    pixelArray[--index] = adjustOverFlow(pixelArray[--index]*2);
+                    pixelArray[--index] = adjustOverFlow(pixelArray[--index]*1.5);
+                    redFlag = true;
+                }
+                if(redFlag) index+= 6;
+                if (g>130 && r < 200  && b < 240) {
+                    pixelArray[--index] = adjustUnderFlow(pixelArray[index]/1.4);
+                    pixelArray[--index] = adjustUnderFlow(pixelArray[index]/1.4);
+                    pixelArray[--index] = adjustUnderFlow(pixelArray[index]/1.2);
+                }
+            }
+            context.putImageData(imageData, 0, 0);
+        }, 1);
+</script>
+</html>
