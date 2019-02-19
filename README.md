@@ -1,7 +1,7 @@
 # Peaker
 HackAUBG 2019 - Peaker
 
-The project helps people with deuteranopia tell red and green colors apart like so:
+The project helps people with color vision deficiency of type deuteranopia start distinguishing red and green colors:
 
 
 Normal Vision   |   Deuteranopia    |   Deuteranopia + Algorithms
